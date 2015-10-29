@@ -1,7 +1,7 @@
 {
   "name": "base-pipeline",
   "description": "base-methods plugin that adds pipeline and plugin methods for dynamically composing streaming plugin pipelines.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/jonschlinkert/base-pipeline",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/base-pipeline",
@@ -21,20 +21,20 @@
     "test": "mocha"
   },
   "dependencies": {
+    "base-fs": "^0.2.0",
     "extend-shallow": "^2.0.1",
     "kind-of": "^2.0.1",
     "lazy-cache": "^0.2.4",
-    "src-stream": "^0.1.1",
     "stream-combiner": "^0.2.2",
     "through2": "^2.0.0"
   },
   "devDependencies": {
     "base-config": "^0.2.0",
-    "base-fs": "^0.1.2",
-    "base-methods": "^0.3.1",
+    "base-methods": "^0.4.0",
     "base-options": "^0.5.0",
     "base-plugins": "^0.4.0",
     "buffer-equal": "0.0.1",
+    "composer": "^0.6.0",
     "graceful-fs": "^4.1.2",
     "gulp": "^3.9.0",
     "gulp-istanbul": "^0.10.2",
