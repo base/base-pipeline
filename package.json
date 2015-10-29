@@ -1,6 +1,6 @@
 {
   "name": "base-pipeline",
-  "description": "base-methods plugin that adds pipeline and plugin methods for easily and programmatically composing streaming plugin pipelines on-the-fly.",
+  "description": "base-methods plugin that adds pipeline and plugin methods for dynamically composing streaming plugin pipelines.",
   "version": "0.1.1",
   "homepage": "https://github.com/jonschlinkert/base-pipeline",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
