@@ -1,6 +1,6 @@
 # base-pipeline [![NPM version](https://badge.fury.io/js/base-pipeline.svg)](http://badge.fury.io/js/base-pipeline)
 
-> base-methods plugin that adds pipeline and plugin methods for easily and programmatically composing streaming plugin pipelines on-the-fly.
+> base-methods plugin that adds pipeline and plugin methods for dynamically composing streaming plugin pipelines.
 
 ## Install
 
@@ -45,9 +45,11 @@ app.src(['foo/*.hbs'])
 Array of registered plugin names:
 
 ```js
+// register plugins
 app.plugin('a', function() {});
 app.plugin('b', function() {});
 
+// pipeline
 app.src(['foo/*.hbs'])
   .pipe(app.pipeline(['a', 'b']))
   .pipe(app.dest('site/'))
@@ -56,9 +58,11 @@ app.src(['foo/*.hbs'])
 List of registed plugin names:
 
 ```js
+// register plugins
 app.plugin('a', function() {});
 app.plugin('b', function() {});
 
+// pipeline
 app.src(['foo/*.hbs'])
   .pipe(app.pipeline('a', 'b'))
   .pipe(app.dest('site/'))
@@ -67,10 +71,12 @@ app.src(['foo/*.hbs'])
 Stacked:
 
 ```js
+// register plugins
 app.plugin('a', function() {});
 app.plugin('b', function() {});
 app.plugin('c', function() {});
 
+// pipeline
 app.src(['foo/*.hbs'])
   .pipe(app.pipeline('a'))
   .pipe(app.pipeline('b'))
