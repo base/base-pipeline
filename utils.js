@@ -26,10 +26,9 @@ require = utils;
  */
 
 require('kind-of', 'typeOf');
-require('through2', 'through');
 require('extend-shallow', 'extend');
-require('stream-combiner', 'pipeline');
-require('src-stream', 'src');
+require('stream-combiner', 'combine');
+require('through2', 'through');
 
 /**
  * Restore `require`

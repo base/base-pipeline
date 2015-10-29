@@ -225,6 +225,48 @@ describe('pipeline()', function() {
       .on('end', cb);
   });
 
+  it('should compose a pipeline from an array of plugins', function (cb) {
+    app.plugin('a', addName('a'));
+    app.plugin('b', addName('b'));
+    app.plugin('c', addName('c'));
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline('a', 'b', 'c'))
+      .on('data', function (file) {
+        assert(file.contents.toString());
+        assert(file.contents.toString() === 'Name:abc');
+      })
+      .on('end', cb);
+  });
+
+  it('should compose a pipeline from a mixture of string/array', function (cb) {
+    app.plugin('a', addName('a'));
+    app.plugin('b', addName('b'));
+    app.plugin('c', addName('c'));
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline(['a', 'b'], 'c'))
+      .on('data', function (file) {
+        assert(file.contents.toString());
+        assert(file.contents.toString() === 'Name:abc');
+      })
+      .on('end', cb);
+  });
+
+  it('should recognize options as the last argument', function (cb) {
+    app.plugin('a', addName('a'));
+    app.plugin('b', addName('b'));
+    app.plugin('c', addName('c'));
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline(['a', 'b'], 'c', {append: '_'}))
+      .on('data', function (file) {
+        assert(file.contents.toString());
+        assert(file.contents.toString() === 'Name:a_b_c_');
+      })
+      .on('end', cb);
+  });
+
   it('should be chainable', function (cb) {
     app.plugin('a', addName('a'));
     app.plugin('b', addName('b'));
@@ -343,10 +385,182 @@ describe('pipeline()', function() {
       .on('end', cb);
   });
 
+  it('should expose "stream" to plugins', function (cb) {
+    app.plugin('a', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.foo = 'bar';
+        next(null, file);
+      }));
+    });
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline())
+      .on('data', function (file) {
+        assert(file.foo === 'bar');
+      })
+      .on('end', cb);
+  });
+
+  it('should work with a named plugin', function (cb) {
+    app.plugin('a', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.foo = 'bar';
+        next(null, file);
+      }));
+    });
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline('a'))
+      .on('data', function (file) {
+        assert(file.foo === 'bar');
+      })
+      .on('end', cb);
+  });
+
+  it('should expose "options" to plugins', function (cb) {
+    app.plugin('a', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.foo = options.foo;
+        next(null, file);
+      }));
+    });
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline({foo: 'bar'}))
+      .on('data', function (file) {
+        assert(file.contents.toString());
+        assert(file.foo === 'bar');
+      })
+      .on('end', cb);
+  });
+
+  it('should handle multiple plugins that pipe from stream', function (cb) {
+    app.plugin('a', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.a = 'aaa';
+        next(null, file);
+      }));
+    });
+    app.plugin('b', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.b = 'bbb';
+        next(null, file);
+      }));
+    });
+    app.plugin('c', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.c = 'ccc';
+        next(null, file);
+      }));
+    });
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline())
+      .on('data', function (file) {
+        assert(file.a === 'aaa');
+        assert(file.b === 'bbb');
+        assert(file.c === 'ccc');
+      })
+      .on('end', cb);
+  });
+
+  it('should handle multiple named plugins that pipe from stream', function (cb) {
+    app.plugin('a', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.a = 'aaa';
+        next(null, file);
+      }));
+    });
+    app.plugin('b', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.b = 'bbb';
+        next(null, file);
+      }));
+    });
+    app.plugin('c', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.c = 'ccc';
+        next(null, file);
+      }));
+    });
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline('a', 'c'))
+      .on('data', function (file) {
+        assert(file.a === 'aaa');
+        assert(!file.b);
+        assert(file.c === 'ccc');
+      })
+      .on('end', cb);
+  });
+
+  it('should disable plugins', function (cb) {
+    app.plugin('a', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.a = 'aaa';
+        next(null, file);
+      }));
+    });
+    app.plugin('b', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.b = 'bbb';
+        next(null, file);
+      }));
+    });
+    app.plugin('c', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        file.c = 'ccc';
+        next(null, file);
+      }));
+    });
+
+    app.disable('plugin.b');
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline())
+      .on('data', function (file) {
+        assert(file.a === 'aaa');
+        assert(!file.b);
+        assert(file.c === 'ccc');
+      })
+      .on('end', cb);
+  });
+
+  it('should handle multiple plugins that pipe from stream', function (cb) {
+    app.plugin('a', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        var str = file.contents.toString() + 'aaa';
+        file.contents = new Buffer(str);
+        next(null, file);
+      }));
+    });
+    app.plugin('b', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        var str = file.contents.toString() + 'bbb';
+        file.contents = new Buffer(str);
+        next(null, file);
+      }));
+    });
+    app.plugin('c', function (options, stream) {
+      return stream.pipe(through.obj(function (file, enc, next) {
+        var str = file.contents.toString() + 'ccc';
+        file.contents = new Buffer(str);
+        next(null, file);
+      }));
+    });
+
+    app.src('test/fixtures/foo.txt')
+      .pipe(app.pipeline(['c', 'a', 'b']))
+      .on('data', function (file) {
+        assert.equal(file.contents.toString(), 'Name:cccaaabbb');
+      })
+      .on('end', cb);
+  });
+
   it('should do nothing when plugin is invalid', function (cb) {
     app.plugin('foo', null);
 
-    app.pipeline(app.src('test/fixtures/foo.txt'))
+    app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline())
       .on('end', function (err) {
         cb();
