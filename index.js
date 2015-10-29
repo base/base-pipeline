@@ -57,8 +57,14 @@ function plugin(options) {
 
     this.define('pipeline', function(plugins, options) {
       if (isStream(plugins)) return plugins;
-      if (typeof plugins === 'string' || typeof plugins === 'function') {
-        plugins = [plugins];
+
+      if (isPlugins(plugins)) {
+        plugins = [].concat.apply([], [].slice.call(arguments));
+        if (utils.typeOf(plugins[plugins.length - 1]) === 'object') {
+          options = plugins.pop();
+        } else {
+          options = {};
+        }
       }
 
       if (utils.typeOf(plugins) === 'object') {
@@ -73,19 +79,18 @@ function plugin(options) {
       var len = plugins.length, i = -1;
       var res = [];
 
+      var pass = utils.through.obj();
+      pass.resume();
+      res.push(pass);
+
       while (++i < len) {
-        var plugin = normalize(this, plugins[i], options);
+        var plugin = utils.through.obj();
+        plugin = normalize(this, plugins[i], options, plugin);
         if (!plugin) continue;
         res.push(plugin);
       }
 
-      if (!res.length) {
-        var pass = utils.through.obj();
-        pass.resume();
-        res.push(pass);
-      }
-
-      var stream = utils.pipeline(res);
+      var stream = utils.combine(res);
       stream.on('error', this.emit.bind(this, 'error'));
       return stream;
     });
@@ -125,15 +130,15 @@ function plugin(options) {
 
 var isDisabled = disabled('plugin');
 
-function normalize(app, val, options) {
+function normalize(app, val, options, stream) {
   if (typeof val === 'string' && app.plugins.hasOwnProperty(val)) {
     if (isDisabled(app, val)) return null;
     var name = path.basename(val, path.extname(val));
     var opts = utils.extend({}, app.option(['plugin', name]), options);
-    return normalize(app, app.plugins[val], opts);
+    return normalize(app, app.plugins[val], opts, stream);
   }
   if (typeof val === 'function') {
-    return val.call(app, options);
+    return val.call(app, options, stream);
   }
   if (isStream(val)) {
     return val;
@@ -156,11 +161,17 @@ function disabled(key) {
       return true;
     }
     return false;
-  }
+  };
 }
 
 function isStream(val) {
   return val && typeof val === 'object'
     && typeof val.pipe === 'function';
+}
+
+function isPlugins(val) {
+  return Array.isArray(val)
+    || typeof val === 'function'
+    || typeof val === 'string';
 }
 
