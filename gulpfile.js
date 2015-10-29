@@ -16,7 +16,7 @@ gulp.task('coverage', function () {
 
 gulp.task('test', ['coverage'], function () {
   return gulp.src('test/*.js')
-    .pipe(mocha({reporter: 'spec'}))
+    .pipe(mocha())
     .pipe(istanbul.writeReports())
     .pipe(istanbul.writeReports({
       reporters: [ 'text' ],
