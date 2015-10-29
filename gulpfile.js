@@ -6,12 +6,12 @@ var stylish = require('jshint-stylish');
 var istanbul = require('gulp-istanbul');
 var jshint = require('gulp-jshint');
 
-var lint = ['index.js', 'lib/*.js'];
+var lint = ['index.js', 'utils.js', 'lib/*.js'];
 
 gulp.task('coverage', function () {
   return gulp.src(lint)
     .pipe(istanbul())
-    .pipe(istanbul.hookRequire());
+    .pipe(istanbul.hookRequire())
 });
 
 gulp.task('test', ['coverage'], function () {
