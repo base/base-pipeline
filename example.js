@@ -20,8 +20,7 @@ app.plugin('lint', function (options) {
 });
 
 app.plugin('coverage', function () {
-  this.stream
-    .pipe(istanbul())
+  this.stream.pipe(istanbul())
     .pipe(istanbul.hookRequire());
 });
 
