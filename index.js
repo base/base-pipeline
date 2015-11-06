@@ -40,7 +40,10 @@ function plugin(options) {
         fn = opts;
         opts = {};
       }
-      this.option(['plugin', name], opts);
+      opts = opts || {};
+      if (Object.keys(opts).length) {
+        this.option(['plugin', name], opts);
+      }
       this.plugins[name] = fn;
       return this;
     });
@@ -111,11 +114,11 @@ function plugin(options) {
             this.plugin(name, {}, val);
 
           } else if (typeof val === 'string') {
-            fn = require(path.resolve(val));
+            fn = tryRequire(val);
             this.plugin(name, {}, fn);
 
           } else if (val && typeof val === 'object') {
-            fn = require(path.resolve(key));
+            fn = tryRequire(key);
             this.plugin(name, val, fn);
 
           } else {
@@ -164,6 +167,43 @@ function disabled(key) {
   };
 }
 
+/**
+ * Try to require the given module
+ * or file path.
+ */
+
+function tryRequire(name, cwd) {
+  var attempts = [name], fp;
+
+  try {
+    return require(name);
+  } catch (err) {}
+
+  name = utils.resolve(name);
+  try {
+    return require(name);
+  } catch (err) {}
+
+  try {
+    fp = path.resolve(name);
+    attempts.push(fp);
+    return require(fp);
+  } catch (err) {}
+
+  try {
+    fp = path.resolve(utils.resolve(cwd), name);
+    attempts.push(fp);
+    return require(fp);
+  } catch (err) {}
+
+  var msg = utils.red('[base-pipeline] cannot find plugin at: \n')
+    + format(attempts)
+    + utils.yellow(' check your configuration to ensure plugin paths are\n'
+    + ' correct (package.json config, options, etc) \n');
+
+  throw new Error(msg);
+}
+
 function isStream(val) {
   return val && typeof val === 'object'
     && typeof val.pipe === 'function';
@@ -175,3 +215,10 @@ function isPlugins(val) {
     || typeof val === 'string';
 }
 
+function format(arr) {
+  var res = '';
+  arr.forEach(function(ele) {
+    res += utils.red(' ✖ ') + '\'' + ele + '\'' + '\n';
+  });
+  return res;
+}

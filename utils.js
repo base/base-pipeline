@@ -29,6 +29,9 @@ require('kind-of', 'typeOf');
 require('extend-shallow', 'extend');
 require('stream-combiner', 'combine');
 require('through2', 'through');
+require('resolve-dir', 'resolve');
+require('ansi-yellow', 'yellow');
+require('ansi-red', 'red');
 
 /**
  * Restore `require`
