@@ -105,6 +105,8 @@ function plugin(options) {
 
     if (typeof this.config === 'function' && this.config.map) {
       this.config.map('plugins', function(plugins) {
+        var cwd = this.options.cwd || process.cwd();
+
         for (var key in plugins) {
           var name = path.basename(key, path.extname(key));
           var val = plugins[key];
@@ -114,11 +116,11 @@ function plugin(options) {
             this.plugin(name, {}, val);
 
           } else if (typeof val === 'string') {
-            fn = tryRequire(val);
+            fn = tryRequire(val, cwd, this.options);
             this.plugin(name, {}, fn);
 
           } else if (val && typeof val === 'object') {
-            fn = tryRequire(key);
+            fn = tryRequire(key, cwd, this.options);
             this.plugin(name, val, fn);
 
           } else {
@@ -172,7 +174,9 @@ function disabled(key) {
  * or file path.
  */
 
-function tryRequire(name, cwd) {
+function tryRequire(name, cwd, options) {
+  options = options || {};
+
   var attempts = [name], fp;
 
   try {
@@ -195,6 +199,10 @@ function tryRequire(name, cwd) {
     attempts.push(fp);
     return require(fp);
   } catch (err) {}
+
+  if (options.verbose !== true) {
+    return;
+  }
 
   var msg = utils.red('[base-pipeline] cannot find plugin at: \n')
     + format(attempts)
