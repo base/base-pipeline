@@ -5,10 +5,12 @@ var mocha = require('gulp-mocha');
 var stylish = require('jshint-stylish');
 var istanbul = require('gulp-istanbul');
 var jshint = require('gulp-jshint');
-var base = require('base');
-var options = require('base-options');
-var fs = require('base-fs');
 var Composer = require('composer');
+
+var fs = require('base-fs');
+var options = require('base-options');
+var base = require('base');
+
 var composer = new Composer();
 var pipeline = require('./');
 
@@ -18,9 +20,9 @@ var app = base()
   .use(pipeline());
 
 
-var lint = ['index.js', 'utils.js', 'lib/*.js'];
+var lint = ['index.js', 'utils.js', 'lib/*.js', 'test/*.js'];
 
-app.plugin('lint', function (options, stream) {
+app.plugin('lint', function(options, stream) {
   return stream
     .on('data', console.log)
     .on('error', console.log)
@@ -29,13 +31,13 @@ app.plugin('lint', function (options, stream) {
     .pipe(jshint.reporter(stylish))
 });
 
-app.plugin('coverage', function (options, stream) {
+app.plugin('coverage', function(options, stream) {
   stream
     .pipe(istanbul())
     .pipe(istanbul.hookRequire());
 });
 
-app.plugin('mocha', function (options, stream) {
+app.plugin('mocha', function(options, stream) {
   return stream.pipe(mocha())
     .pipe(istanbul.writeReports())
     .pipe(istanbul.writeReports({
@@ -44,22 +46,21 @@ app.plugin('mocha', function (options, stream) {
     }))
 });
 
-// composer.task('lint', function() {
-//   return app.src(lint.concat('test/*.js'))
-//     .pipe(app.pipeline('lint'))
-    // .on('data', function (file) {
-    //   console.log(file)
-    // })
-    // .on('end', cb);
-// });
+composer.task('lint', function(cb) {
+  app.src(lint.concat('test/*.js'))
+    .pipe(app.pipeline('lint'))
+    .on('data', function(file) {
+      console.log(file)
+    })
+    .on('end', cb);
+});
 
-// composer.task('coverage', function() {
-//   return app.src(lint)
-//     .pipe(app.pipeline('coverage'));
-// });
+composer.task('coverage', function() {
+  return app.src(lint)
+    .pipe(app.pipeline('coverage'));
+});
 
-// composer.task('test', ['coverage'], function() {
-composer.task('test', function() {
+composer.task('test', ['coverage'], function() {
   return app.src('test/*.js')
     .pipe(app.pipeline('mocha', {
       dir: 'coverage',
@@ -67,9 +68,9 @@ composer.task('test', function() {
     }));
 });
 
-// composer.task('default', ['lint', 'test']);
+composer.task('default', ['test']);
 
-composer.build('test', function (err) {
+composer.build('default', function(err) {
   if (err) return console.log(err);
   console.log('done.');
 });
