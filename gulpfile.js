@@ -5,27 +5,25 @@ var mocha = require('gulp-mocha');
 var istanbul = require('gulp-istanbul');
 var eslint = require('gulp-eslint');
 
-var lint = ['index.js', 'utils.js', 'lib/*.js'];
-
 gulp.task('coverage', function() {
-  return gulp.src(lint)
-    .pipe(istanbul())
-    .pipe(istanbul.hookRequire())
+  return gulp.src(['index.js', 'utils.js'])
+    .pipe(istanbul({includeUntested: true}))
+    .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['coverage'], function() {
-  return gulp.src('test/*.js')
+gulp.task('mocha', ['coverage'], function() {
+  return gulp.src('test.js')
     .pipe(mocha())
-    .pipe(istanbul.writeReports())
     .pipe(istanbul.writeReports({
-      reporters: [ 'text' ],
+      reporters: ['html', 'text', 'text-summary'],
       reportOpts: {dir: 'coverage', file: 'summary.txt'}
-    }))
+    }));
 });
 
-gulp.task('lint', function() {
-  return gulp.src(lint.concat('test/*.js'))
+gulp.task('eslint', function() {
+  return gulp.src('*.js')
     .pipe(eslint())
+    .pipe(eslint.format());
 });
 
-gulp.task('default', ['lint', 'test']);
+gulp.task('default', ['mocha', 'eslint']);
