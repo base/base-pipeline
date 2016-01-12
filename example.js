@@ -1,31 +1,42 @@
 'use strict';
 
+var through = require('through2');
 var mocha = require('gulp-mocha');
 var stylish = require('jshint-stylish');
 var istanbul = require('gulp-istanbul');
 var jshint = require('gulp-jshint');
+var base = require('base');
 var options = require('base-options');
-var base = require('base-methods');
-var bfs = require('base-fs');
+var fs = require('base-fs');
+var Composer = require('composer');
+var composer = new Composer();
 var pipeline = require('./');
 
 var app = base()
-  .use(bfs)
+  .use(fs)
   .use(options())
   .use(pipeline());
 
-app.plugin('lint', function (options) {
-  this.stream.pipe(jshint(options))
-    .pipe(jshint.reporter(stylish));
+
+var lint = ['index.js', 'utils.js', 'lib/*.js'];
+
+app.plugin('lint', function (options, stream) {
+  return stream
+    .on('data', console.log)
+    .on('error', console.log)
+    .pipe(jshint(options))
+    .on('error', console.log)
+    .pipe(jshint.reporter(stylish))
 });
 
-app.plugin('coverage', function () {
-  this.stream.pipe(istanbul())
+app.plugin('coverage', function (options, stream) {
+  stream
+    .pipe(istanbul())
     .pipe(istanbul.hookRequire());
 });
 
-app.plugin('test', function (options) {
-  this.stream.pipe(mocha())
+app.plugin('mocha', function (options, stream) {
+  return stream.pipe(mocha())
     .pipe(istanbul.writeReports())
     .pipe(istanbul.writeReports({
       reporters: [ 'text' ],
@@ -33,12 +44,33 @@ app.plugin('test', function (options) {
     }))
 });
 
-app.src(['index.js'])
-  .pipe(app.pipeline('lint'))
+// composer.task('lint', function() {
+//   return app.src(lint.concat('test/*.js'))
+//     .pipe(app.pipeline('lint'))
+    // .on('data', function (file) {
+    //   console.log(file)
+    // })
+    // .on('end', cb);
+// });
 
-app.src(['index.js', 'test/*.js'])
-  .pipe(app.pipeline('coverage'))
-  .pipe(app.pipeline('test', {
-    dir: 'coverage',
-    file: 'summary.txt'
-  }))
+// composer.task('coverage', function() {
+//   return app.src(lint)
+//     .pipe(app.pipeline('coverage'));
+// });
+
+// composer.task('test', ['coverage'], function() {
+composer.task('test', function() {
+  return app.src('test/*.js')
+    .pipe(app.pipeline('mocha', {
+      dir: 'coverage',
+      file: 'summary.txt'
+    }));
+});
+
+// composer.task('default', ['lint', 'test']);
+
+composer.build('test', function (err) {
+  if (err) return console.log(err);
+  console.log('done.');
+});
+

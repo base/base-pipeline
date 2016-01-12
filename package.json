@@ -21,32 +21,30 @@
     "test": "mocha"
   },
   "dependencies": {
-    "ansi-red": "^0.1.1",
-    "ansi-yellow": "^0.1.1",
+    "base": "^0.6.3",
     "extend-shallow": "^2.0.1",
-    "kind-of": "^2.0.1",
-    "lazy-cache": "^0.2.4",
-    "resolve-dir": "^0.1.0",
+    "kind-of": "^3.0.2",
+    "lazy-cache": "^1.0.3",
     "stream-combiner": "^0.2.2",
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "base-config": "^0.2.0",
+    "base-config": "^0.3.3",
     "base-fs": "^0.2.0",
-    "base-methods": "^0.4.0",
-    "base-options": "^0.5.0",
-    "base-plugins": "^0.4.0",
-    "buffer-equal": "0.0.1",
-    "composer": "^0.6.0",
+    "base-options": "^0.5.4",
+    "base-plugins": "^0.4.1",
+    "buffer-equal": "^1.0.0",
+    "composer": "^0.8.3",
     "graceful-fs": "^4.1.2",
     "gulp": "^3.9.0",
     "gulp-eslint": "^1.0.0",
+    "gulp-format-md": "^0.1.5",
     "gulp-istanbul": "^0.10.2",
     "gulp-jshint": "^1.11.2",
     "gulp-mocha": "^2.1.3",
-    "jshint-stylish": "^2.0.1",
+    "jshint-stylish": "^2.1.0",
     "mocha": "*",
-    "rimraf": "^2.4.3",
+    "rimraf": "^2.5.0",
     "should": "*",
     "sinon": "^1.17.2",
     "vinyl": "^1.1.0"
@@ -70,6 +68,10 @@
         "base-plugins",
         "base-store"
       ]
-    }
+    },
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "layout": "default"
   }
 }
