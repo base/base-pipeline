@@ -20,14 +20,6 @@
   "scripts": {
     "test": "mocha"
   },
-  "dependencies": {
-    "base": "^0.6.3",
-    "extend-shallow": "^2.0.1",
-    "kind-of": "^3.0.2",
-    "lazy-cache": "^1.0.3",
-    "stream-combiner": "^0.2.2",
-    "through2": "^2.0.0"
-  },
   "devDependencies": {
     "base-config": "^0.3.3",
     "base-fs": "^0.2.0",

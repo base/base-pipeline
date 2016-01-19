@@ -72,6 +72,6 @@ composer.task('default', ['test']);
 
 composer.build('default', function(err) {
   if (err) return console.log(err);
-  console.log('done.');
+  console.log('cb.');
 });
 

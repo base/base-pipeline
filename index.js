@@ -14,6 +14,8 @@ module.exports = function(options) {
 
 function plugin(options) {
   return function(app) {
+    if (this.isRegistered('base-pipeline')) return;
+
     if (typeof app.option !== 'function') {
       var msg = '"base-pipeline" plugin expects the "base-options"'
         + ' plugin to be registered first.';
