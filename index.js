@@ -17,9 +17,7 @@ function plugin(options) {
     if (this.isRegistered('base-pipeline')) return;
 
     if (typeof app.option !== 'function') {
-      var msg = '"base-pipeline" plugin expects the "base-options"'
-        + ' plugin to be registered first.';
-      throw new Error(msg);
+      throw new Error('"base-pipeline" plugin expects the "base-options" plugin to be registered first.');
     }
 
     this.plugins = this.plugins || {};
