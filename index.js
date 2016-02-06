@@ -30,20 +30,30 @@ function plugin(options) {
      * @api public
      */
 
-    this.define('plugin', function(name, opts, fn) {
+    this.define('plugin', function(name, options, fn) {
       if (typeof name !== 'string') {
         throw new TypeError('expected plugin name to be a string');
       }
-      if (arguments.length === 1) {
-        return this.plugins[name];
+      var args = [].slice.call(arguments, 1);
+      fn = args.pop();
+      options = args.length ? args.pop() : {};
+
+      if (typeof fn !== 'function' && !isStream(fn)) {
+        var opts = utils.extend({}, this.options, fn);
+        var stream = utils.through.obj();
+        var plugin = this.plugins[name];
+        return normalize(this, plugin, opts, stream);
       }
-      if (typeof opts === 'function' || isStream(opts)) {
-        fn = opts;
-        opts = {};
+
+      if (typeof options === 'function' || isStream(options)) {
+        console.log(options)
+        fn = options;
+        options = {};
       }
-      opts = opts || {};
-      if (Object.keys(opts).length) {
-        this.option(['plugin', name], opts);
+
+      options = options || {};
+      if (Object.keys(options).length) {
+        this.option(['plugin', name], options);
       }
       this.plugins[name] = fn;
       return this;
