@@ -5,7 +5,7 @@ var path = require('path');
 var assert = require('assert');
 var through = require('through2');
 var base = require('base');
-var options = require('base-options');
+var option = require('base-option');
 var plugins = require('base-plugins');
 var config = require('base-config');
 var fs = require('base-fs');
@@ -29,7 +29,7 @@ function addName(name) {
 describe('pipeline', function() {
   beforeEach(function() {
     app = base();
-    app.use(fs);
+    app.use(fs());
     app.use(plugins());
   });
 
@@ -47,7 +47,7 @@ describe('pipeline', function() {
 
   it('should return a function when `isApp` is defined', function() {
     app.set('isApp', true);
-    app.use(options());
+    app.use(option());
     app.use(pipeline());
 
     var stream = app.pipeline();
@@ -60,8 +60,8 @@ describe('pipeline', function() {
 describe('pipeline()', function() {
   beforeEach(function() {
     app = base();
-    app.use(fs);
-    app.use(options());
+    app.use(fs());
+    app.use(option());
     app.use(pipeline());
   });
 

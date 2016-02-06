@@ -10,7 +10,7 @@ var app;
 describe('src()', function() {
   beforeEach(function() {
     app = base();
-    app.use(fs);
+    app.use(fs());
   });
 
   it('should return a stream', function(cb) {

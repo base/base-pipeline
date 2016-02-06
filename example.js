@@ -8,15 +8,15 @@ var jshint = require('gulp-jshint');
 var Composer = require('composer');
 
 var fs = require('base-fs');
-var options = require('base-options');
+var option = require('base-option');
 var base = require('base');
 
 var composer = new Composer();
 var pipeline = require('./');
 
 var app = base()
-  .use(fs)
-  .use(options())
+  .use(fs())
+  .use(option())
   .use(pipeline());
 
 

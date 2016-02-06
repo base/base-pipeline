@@ -21,7 +21,6 @@
     "test": "mocha"
   },
   "dependencies": {
-    "base": "^0.6.4",
     "extend-shallow": "^2.0.1",
     "kind-of": "^3.0.2",
     "lazy-cache": "^1.0.3",
@@ -29,13 +28,14 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "base-config": "^0.3.4",
-    "base-fs": "^0.2.1",
-    "base-options": "^0.5.5",
+    "base": "^0.6.7",
+    "base-config": "^0.4.0",
+    "base-fs": "^0.3.0",
+    "base-option": "^0.6.1",
     "base-plugins": "^0.4.1",
     "buffer-equal": "^1.0.0",
-    "composer": "^0.8.3",
-    "graceful-fs": "^4.1.2",
+    "composer": "^0.11.1",
+    "graceful-fs": "^4.1.3",
     "gulp": "^3.9.0",
     "gulp-eslint": "^1.0.0",
     "gulp-format-md": "^0.1.5",
@@ -44,10 +44,10 @@
     "gulp-mocha": "^2.1.3",
     "jshint-stylish": "^2.1.0",
     "mocha": "*",
-    "rimraf": "^2.5.0",
+    "rimraf": "^2.5.1",
     "should": "*",
-    "sinon": "^1.17.2",
-    "vinyl": "^1.1.0"
+    "sinon": "^1.17.3",
+    "vinyl": "^1.1.1"
   },
   "keywords": [
     "base",
