@@ -34,27 +34,21 @@ function plugin(options) {
       if (typeof name !== 'string') {
         throw new TypeError('expected plugin name to be a string');
       }
+
       var args = [].slice.call(arguments, 1);
       fn = args.pop();
       options = args.length ? args.pop() : {};
 
       if (typeof fn !== 'function' && !isStream(fn)) {
-        var opts = utils.extend({}, this.options, fn);
-        var stream = utils.through.obj();
-        var plugin = this.plugins[name];
-        return normalize(this, plugin, opts, stream);
+        return normalize(this, name, fn);
       }
 
       if (typeof options === 'function' || isStream(options)) {
-        console.log(options)
         fn = options;
         options = {};
       }
 
-      options = options || {};
-      if (Object.keys(options).length) {
-        this.option(['plugin', name], options);
-      }
+      this.option(['plugin', name], options || {});
       this.plugins[name] = fn;
       return this;
     });
@@ -90,16 +84,16 @@ function plugin(options) {
         plugins = Object.keys(this.plugins);
       }
 
-      var len = plugins.length, i = -1;
+      var len = plugins.length;
+      var idx = -1;
       var res = [];
 
       var pass = utils.through.obj();
       pass.resume();
       res.push(pass);
 
-      while (++i < len) {
-        var plugin = utils.through.obj();
-        plugin = normalize(this, plugins[i], options, plugin);
+      while (++idx < len) {
+        var plugin = normalize(this, plugins[idx], options);
         if (!plugin) continue;
         res.push(plugin);
       }
@@ -111,17 +105,15 @@ function plugin(options) {
   };
 }
 
-var isDisabled = disabled('plugin');
-
-function normalize(app, val, options, stream) {
+function normalize(app, val, options) {
   if (typeof val === 'string' && app.plugins.hasOwnProperty(val)) {
-    if (isDisabled(app, val)) return null;
+    if (isDisabled(app, 'plugin', val)) return null;
     var name = path.basename(val, path.extname(val));
     var opts = utils.extend({}, app.option(['plugin', name]), options);
-    return normalize(app, app.plugins[val], opts, stream);
+    return normalize(app, app.plugins[val], opts);
   }
   if (typeof val === 'function') {
-    return val.call(app, options, stream);
+    return val.call(app, options, utils.through.obj());
   }
   if (isStream(val)) {
     return val;
@@ -133,19 +125,17 @@ function normalize(app, val, options, stream) {
  * Returns true if the plugin is disabled.
  */
 
-function disabled(key) {
-  return function(app, prop) {
-    // key + '.plugin'
-    if (app.isFalse([key, prop])) {
-      return true;
-    }
-    // key + '.plugin.disable'
-    if (app.isTrue([key, prop, 'disable'])) {
-      return true;
-    }
-    return false;
-  };
-}
+function isDisabled(app, key, prop) {
+  // key + '.plugin'
+  if (app.isFalse([key, prop])) {
+    return true;
+  }
+  // key + '.plugin.disable'
+  if (app.isTrue([key, prop, 'disable'])) {
+    return true;
+  }
+  return false;
+};
 
 function isStream(val) {
   return val && typeof val === 'object'
