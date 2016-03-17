@@ -2,11 +2,11 @@
   "name": "base-pipeline",
   "description": "base-methods plugin that adds pipeline and plugin methods for dynamically composing streaming plugin pipelines.",
   "version": "0.2.3",
-  "homepage": "https://github.com/jonschlinkert/base-pipeline",
+  "homepage": "https://github.com/node-base/base-pipeline",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
-  "repository": "jonschlinkert/base-pipeline",
+  "repository": "node-base/base-pipeline",
   "bugs": {
-    "url": "https://github.com/jonschlinkert/base-pipeline/issues"
+    "url": "https://github.com/node-base/base-pipeline/issues"
   },
   "license": "MIT",
   "files": [
@@ -58,6 +58,15 @@
     "vinyl"
   ],
   "verb": {
+    "run": true,
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
     "related": {
       "list": [
         "base-cli",
@@ -69,9 +78,11 @@
         "base-store"
       ]
     },
-    "plugins": [
-      "gulp-format-md"
+    "reflinks": [
+      "verb"
     ],
-    "layout": "default"
+    "lint": {
+      "reflinks": true
+    }
   }
 }
