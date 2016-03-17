@@ -40,7 +40,8 @@ function plugin(options) {
       options = args.length ? args.pop() : {};
 
       if (typeof fn !== 'function' && !isStream(fn)) {
-        return normalize(this, name, fn);
+        options = fn;
+        return normalize(this, name, options);
       }
 
       if (typeof options === 'function' || isStream(options)) {
