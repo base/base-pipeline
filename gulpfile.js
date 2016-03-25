@@ -12,8 +12,9 @@ gulp.task('coverage', function() {
 });
 
 gulp.task('mocha', ['coverage'], function() {
-  return gulp.src('test.js')
+  return gulp.src('test/*.js')
     .pipe(mocha())
+    .pipe(istanbul.writeReports())
     .pipe(istanbul.writeReports({
       reporters: ['html', 'text', 'text-summary'],
       reportOpts: {dir: 'coverage', file: 'summary.txt'}

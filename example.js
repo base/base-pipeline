@@ -1,77 +1,78 @@
 'use strict';
 
+var argv = require('minimist')(process.argv.slice(2));
 var through = require('through2');
-var mocha = require('gulp-mocha');
-var stylish = require('jshint-stylish');
 var istanbul = require('gulp-istanbul');
-var jshint = require('gulp-jshint');
-var Composer = require('composer');
+var eslint = require('gulp-eslint');
+var mocha = require('gulp-mocha');
 
-var fs = require('base-fs');
-var option = require('base-option');
 var base = require('base');
-
-var composer = new Composer();
 var pipeline = require('./');
+var runtimes = require('base-runtimes');
+var option = require('base-option');
+var task = require('base-task');
+var fs = require('base-fs');
 
+// plugins
 var app = base()
-  .use(fs())
+  .use(task())
   .use(option())
-  .use(pipeline());
+  .use(runtimes())
+  .use(pipeline())
+  .use(fs())
 
-
-var lint = ['index.js', 'utils.js', 'lib/*.js', 'test/*.js'];
+var lint = ['index.js', 'utils.js', 'test/*.js'];
+var tasks = argv._.length ? argv._ : ['default'];
 
 app.plugin('lint', function(options, stream) {
   return stream
-    .on('data', console.log)
-    .on('error', console.log)
-    .pipe(jshint(options))
-    .on('error', console.log)
-    .pipe(jshint.reporter(stylish))
+    .pipe(eslint())
+    .pipe(eslint.format());
 });
 
 app.plugin('coverage', function(options, stream) {
-  stream
-    .pipe(istanbul())
+  return stream
+    .pipe(istanbul({includeUntested: true}))
     .pipe(istanbul.hookRequire());
 });
 
 app.plugin('mocha', function(options, stream) {
-  return stream.pipe(mocha())
+  return stream.pipe(mocha(options));
+});
+
+app.plugin('reports', function(options, stream) {
+  return stream
     .pipe(istanbul.writeReports())
     .pipe(istanbul.writeReports({
-      reporters: [ 'text' ],
-      reportOpts: options
+      reporters: ['html', 'text', 'text-summary'],
+      reportOpts: {dir: 'coverage', file: 'summary.txt'}
     }))
 });
 
-composer.task('lint', function(cb) {
-  app.src(lint.concat('test/*.js'))
+app.task('lint', function() {
+  return app.src(lint)
     .pipe(app.pipeline('lint'))
-    .on('data', function(file) {
-      console.log(file)
-    })
-    .on('end', cb);
 });
 
-composer.task('coverage', function() {
+app.task('coverage', function() {
   return app.src(lint)
     .pipe(app.pipeline('coverage'));
 });
 
-composer.task('test', ['coverage'], function() {
+app.task('test', ['coverage'], function() {
   return app.src('test/*.js')
-    .pipe(app.pipeline('mocha', {
-      dir: 'coverage',
-      file: 'summary.txt'
-    }));
+    .pipe(app.pipeline('mocha'))
+    .pipe(istanbul.writeReports())
+    // .pipe(istanbul.writeReports({
+    //   reporters: ['html', 'text', 'text-summary'],
+    //   reportOpts: {dir: 'coverage', file: 'summary.txt'}
+    // }));
 });
 
-composer.task('default', ['test']);
+app.task('default', ['lint', 'test']);
 
-composer.build('default', function(err) {
+app.build(tasks, function(err) {
   if (err) return console.log(err);
-  console.log('cb.');
+  console.log('done!');
 });
 
