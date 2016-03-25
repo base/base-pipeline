@@ -53,7 +53,7 @@ describe('pipeline', function() {
     var stream = app.pipeline();
     assert(app.fns);
     assert(Array.isArray(app.fns));
-    assert(app.fns.length === 2);
+    assert.equal(app.fns.length, 2);
   });
 });
 
@@ -67,15 +67,15 @@ describe('pipeline()', function() {
 
   it('should expose a pipeline method', function() {
     assert(app.pipeline);
-    assert(typeof app.pipeline === 'function');
+    assert.equal(typeof app.pipeline, 'function');
   });
 
   it('should return a stream', function() {
     var stream = app.pipeline()
     assert(stream);
-    assert(typeof stream === 'object');
-    assert(typeof stream.on === 'function');
-    assert(typeof stream.emit === 'function');
+    assert.equal(typeof stream, 'object');
+    assert.equal(typeof stream.on, 'function');
+    assert.equal(typeof stream.emit, 'function');
   });
 
   it('should compose a pipeline from a registered plugin', function(cb) {
@@ -84,7 +84,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline('a'))
       .on('data', function(file) {
-        assert(file.contents.toString() === 'Name:a');
+        assert.equal(file.contents.toString(), 'Name:a');
       })
       .on('end', cb);
   });
@@ -104,7 +104,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline(addName('foo')))
       .on('data', function(file) {
-        assert(file.contents.toString() === 'Name:foo');
+        assert.equal(file.contents.toString(), 'Name:foo');
       })
       .on('end', cb);
   });
@@ -122,7 +122,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline(addName('foo')))
       .on('data', function(file) {
-        assert(file.contents.toString() === 'Name:foo');
+        assert.equal(file.contents.toString(), 'Name:foo');
       })
       .on('end', cb);
   });
@@ -136,7 +136,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline(['a', 'b', 'c']))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abc');
+        assert.equal(file.contents.toString(), 'Name:abc');
       })
       .on('end', cb);
   });
@@ -150,7 +150,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline('a', 'b', 'c'))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abc');
+        assert.equal(file.contents.toString(), 'Name:abc');
       })
       .on('end', cb);
   });
@@ -164,7 +164,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline(['a', 'b'], 'c'))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abc');
+        assert.equal(file.contents.toString(), 'Name:abc');
       })
       .on('end', cb);
   });
@@ -178,7 +178,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline(['a', 'b'], 'c', {append: '_'}))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:a_b_c_');
+        assert.equal(file.contents.toString(), 'Name:a_b_c_');
       })
       .on('end', cb);
   });
@@ -194,7 +194,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline('c'))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abc');
+        assert.equal(file.contents.toString(), 'Name:abc');
       })
       .on('end', cb);
   });
@@ -209,7 +209,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline('c'))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abc');
+        assert.equal(file.contents.toString(), 'Name:abc');
       })
       .on('end', cb);
   });
@@ -219,7 +219,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline())
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:');
+        assert.equal(file.contents.toString(), 'Name:');
       })
       .on('end', cb);
   });
@@ -233,7 +233,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline())
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abc');
+        assert.equal(file.contents.toString(), 'Name:abc');
       })
       .on('end', cb);
   });
@@ -248,7 +248,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline())
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abcabc');
+        assert.equal(file.contents.toString(), 'Name:abcabc');
       })
       .on('end', cb);
   });
@@ -262,7 +262,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline({append: 'foo'}))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:afoobfoocfoo');
+        assert.equal(file.contents.toString(), 'Name:afoobfoocfoo');
       })
       .on('end', cb);
   });
@@ -281,7 +281,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline())
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abcd');
+        assert.equal(file.contents.toString(), 'Name:abcd');
       })
       .on('end', cb);
   });
@@ -296,7 +296,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline())
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.contents.toString() === 'Name:abcabc');
+        assert.equal(file.contents.toString(), 'Name:abcabc');
       })
       .on('end', cb);
   });
@@ -312,7 +312,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline())
       .on('data', function(file) {
-        assert(file.foo === 'bar');
+        assert.equal(file.foo, 'bar');
       })
       .on('end', cb);
   });
@@ -328,7 +328,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline('a'))
       .on('data', function(file) {
-        assert(file.foo === 'bar');
+        assert.equal(file.foo, 'bar');
       })
       .on('end', cb);
   });
@@ -345,7 +345,7 @@ describe('pipeline()', function() {
       .pipe(app.pipeline({foo: 'bar'}))
       .on('data', function(file) {
         assert(file.contents.toString());
-        assert(file.foo === 'bar');
+        assert.equal(file.foo, 'bar');
       })
       .on('end', cb);
   });
@@ -373,9 +373,9 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline())
       .on('data', function(file) {
-        assert(file.a === 'aaa');
-        assert(file.b === 'bbb');
-        assert(file.c === 'ccc');
+        assert.equal(file.a, 'aaa');
+        assert.equal(file.b, 'bbb');
+        assert.equal(file.c, 'ccc');
       })
       .on('end', cb);
   });
@@ -403,9 +403,9 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline('a', 'c'))
       .on('data', function(file) {
-        assert(file.a === 'aaa');
+        assert.equal(file.a, 'aaa');
         assert(!file.b);
-        assert(file.c === 'ccc');
+        assert.equal(file.c, 'ccc');
       })
       .on('end', cb);
   });
@@ -435,9 +435,9 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline())
       .on('data', function(file) {
-        assert(file.a === 'aaa');
+        assert.equal(file.a, 'aaa');
         assert(!file.b);
-        assert(file.c === 'ccc');
+        assert.equal(file.c, 'ccc');
       })
       .on('end', cb);
   });
@@ -501,7 +501,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline('a'))
       .on('data', function(file) {
-        assert(file.contents.toString() === 'Name:bar');
+        assert.equal(file.contents.toString(), 'Name:bar');
       })
       .on('end', cb);
   });
@@ -516,7 +516,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline(['a', 'b', 'c']))
       .on('data', function(file) {
-        assert(file.contents.toString() === 'Name:bc');
+        assert.equal(file.contents.toString(), 'Name:bc');
       })
       .on('end', cb);
   });
@@ -533,7 +533,7 @@ describe('pipeline()', function() {
     app.src('test/fixtures/foo.txt')
       .pipe(app.pipeline(['a', 'b', 'c']))
       .on('data', function(file) {
-        assert(file.contents.toString() === 'Name:bc');
+        assert.equal(file.contents.toString(), 'Name:bc');
       })
       .on('end', cb);
   });
