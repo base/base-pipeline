@@ -4,7 +4,7 @@ require('mocha');
 var path = require('path');
 var assert = require('assert');
 var rimraf = require('rimraf');
-var base = require('base');
+var Base = require('base');
 var fs = require('base-fs');
 var app;
 
@@ -14,7 +14,8 @@ var outpath = path.join(__dirname, 'out-fixtures');
 describe('copy()', function() {
   beforeEach(function(cb) {
     rimraf(outpath, cb);
-    app = base();
+    app = new Base();
+    app.isApp = true;
     app.use(fs());
   });
 

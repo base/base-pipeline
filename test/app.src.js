@@ -3,13 +3,14 @@
 var path = require('path');
 var assert = require('assert');
 var should = require('should');
-var base = require('base');
+var Base = require('base');
 var fs = require('base-fs');
 var app;
 
 describe('src()', function() {
   beforeEach(function() {
-    app = base();
+    app = new Base();
+    app.isApp = true;
     app.use(fs());
   });
 

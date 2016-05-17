@@ -4,7 +4,7 @@ require('mocha');
 var path = require('path');
 var assert = require('assert');
 var through = require('through2');
-var base = require('base');
+var Base = require('base');
 var option = require('base-option');
 var fs = require('base-fs');
 var pipeline = require('..');
@@ -12,7 +12,8 @@ var app;
 
 describe('plugin()', function() {
   beforeEach(function() {
-    app = base();
+    app = new Base();
+    app.isApp = true;
     app.use(fs());
     app.use(option());
     app.use(pipeline());

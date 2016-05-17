@@ -4,7 +4,7 @@ require('mocha');
 var path = require('path');
 var assert = require('assert');
 var through = require('through2');
-var base = require('base');
+var Base = require('base');
 var option = require('base-option');
 var plugins = require('base-plugins');
 var config = require('base-config');
@@ -28,21 +28,10 @@ function addName(name) {
 
 describe('pipeline', function() {
   beforeEach(function() {
-    app = base();
+    app = new Base();
+    app.isApp = true;
     app.use(fs());
     app.use(plugins());
-  });
-
-  it('should throw an error when `app.option` is missing', function(cb) {
-    try {
-      app.use(pipeline());
-      cb(new Error('expected an error'));
-    } catch (err) {
-      assert(err);
-      assert(err.message);
-      assert(/to be registered/.test(err.message));
-      cb();
-    }
   });
 
   it('should return a function when `isApp` is defined', function() {
@@ -59,7 +48,8 @@ describe('pipeline', function() {
 
 describe('pipeline()', function() {
   beforeEach(function() {
-    app = base();
+    app = new Base();
+    app.isApp = true;
     app.use(fs());
     app.use(option());
     app.use(pipeline());

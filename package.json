@@ -21,7 +21,10 @@
     "test": "mocha"
   },
   "dependencies": {
+    "base-option": "^0.7.0",
     "extend-shallow": "^2.0.1",
+    "is-registered": "^0.1.4",
+    "is-valid-instance": "^0.1.0",
     "kind-of": "^3.0.2",
     "lazy-cache": "^1.0.3",
     "stream-combiner": "^0.2.2",
@@ -31,7 +34,6 @@
     "base": "^0.8.1",
     "base-config": "^0.5.2",
     "base-fs": "^0.3.1",
-    "base-option": "^0.7.0",
     "base-plugins": "^0.4.9",
     "base-runtimes": "^0.1.5",
     "base-task": "^0.4.2",
