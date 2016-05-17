@@ -1,6 +1,6 @@
 {
   "name": "base-pipeline",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "base-methods plugin that adds pipeline and plugin methods for dynamically composing streaming plugin pipelines.",
   "homepage": "https://github.com/node-base/base-pipeline",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
@@ -25,10 +25,10 @@
     "extend-shallow": "^2.0.1",
     "is-registered": "^0.1.4",
     "is-valid-instance": "^0.1.0",
-    "kind-of": "^3.0.2",
-    "lazy-cache": "^1.0.3",
+    "kind-of": "^3.0.3",
+    "lazy-cache": "^2.0.1",
     "stream-combiner": "^0.2.2",
-    "through2": "^2.0.0"
+    "through2": "^2.0.1"
   },
   "devDependencies": {
     "base": "^0.8.1",
