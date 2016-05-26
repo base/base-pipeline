@@ -14,7 +14,7 @@ module.exports = function(options) {
 
 function plugin(options) {
   return function(app) {
-    if (!isValid(this)) return;
+    if (!utils.isValid(this)) return;
 
     this.use(utils.option());
     this.plugins = this.plugins || {};
@@ -144,15 +144,4 @@ function isPlugins(val) {
   return Array.isArray(val)
     || typeof val === 'function'
     || typeof val === 'string';
-}
-
-
-function isValid(app) {
-  if (!utils.isValidInstance(app, ['app', 'views', 'collection'])) {
-    return false;
-  }
-  if (utils.isRegistered(app, 'base-pipeline')) {
-    return false;
-  }
-  return true;
 }
