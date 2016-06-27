@@ -14,7 +14,7 @@ module.exports = function(options) {
 
 function plugin(options) {
   return function(app) {
-    if (!utils.isValid(this)) return;
+    if (!utils.isValid(app, 'base-pipeline', ['app', 'collection'])) return;
 
     this.use(utils.option());
     this.plugins = this.plugins || {};
