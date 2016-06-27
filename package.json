@@ -1,7 +1,7 @@
 {
   "name": "base-pipeline",
   "description": "base-methods plugin that adds pipeline and plugin methods for dynamically composing streaming plugin pipelines.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "https://github.com/node-base/base-pipeline",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "node-base/base-pipeline",
