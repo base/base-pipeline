@@ -24,7 +24,7 @@
     "base-option": "^0.8.2",
     "extend-shallow": "^2.0.1",
     "is-valid-app": "^0.1.2",
-    "kind-of": "^3.0.3",
+    "kind-of": "^6.0.3",
     "lazy-cache": "^2.0.1",
     "stream-combiner": "^0.2.2",
     "through2": "^2.0.1"
